@@ -12,6 +12,7 @@ router.post("/register", async (req, res) => {
   try {
     const { user_name, email, password } = req.body;
 
+    // CHECK IF USER EXISTS
     const user = await pool.query(
       "SELECT * FROM users WHERE email = $1",
       [email]
@@ -21,13 +22,15 @@ router.post("/register", async (req, res) => {
       return res.status(400).json("User already exists");
     }
 
+    // HASH PASSWORD
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // INSERT USER
     const newUser = await pool.query(
       `
-      INSERT INTO users (username, email, password)
+      INSERT INTO users (name, email, password)
       VALUES ($1, $2, $3)
-      RETURNING id, username, email
+      RETURNING id, name, email
       `,
       [user_name, email, hashedPassword]
     );
@@ -47,6 +50,7 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // FIND USER
     const user = await pool.query(
       "SELECT * FROM users WHERE email = $1",
       [email]
@@ -56,6 +60,7 @@ router.post("/login", async (req, res) => {
       return res.status(400).json("User not found");
     }
 
+    // CHECK PASSWORD
     const validPassword = await bcrypt.compare(
       password,
       user.rows[0].password
@@ -65,6 +70,7 @@ router.post("/login", async (req, res) => {
       return res.status(400).json("Invalid password");
     }
 
+    // CREATE TOKEN
     const token = jwt.sign(
       { userId: user.rows[0].id },
       process.env.JWT_SECRET,
@@ -75,7 +81,7 @@ router.post("/login", async (req, res) => {
       token,
       user: {
         id: user.rows[0].id,
-        username: user.rows[0].username,
+        name: user.rows[0].name,
         email: user.rows[0].email,
       },
     });

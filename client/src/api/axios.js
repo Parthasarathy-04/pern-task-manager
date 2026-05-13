@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://pern-task-manager-xj2f.onrender.com/api",
+  baseURL: "https://pern-task-manager-indol.vercel.app/login",
   headers: {
     "Content-Type": "application/json",
   },

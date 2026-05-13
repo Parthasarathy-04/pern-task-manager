@@ -1,0 +1,482 @@
+/* ===============================
+   1. ROOT DESIGN SYSTEM & IMPORTS
+================================ */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* --- TYPOGRAPHY --- */
+  --font-main: "Outfit", sans-serif;
+  --font-code: "JetBrains Mono", monospace;
+
+  /* --- LIGHT THEME (DEFAULT) --- */
+  --bg: #fdf6f0; 
+  --panel: rgba(255, 255, 255, 0.65);
+  --card: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --border: rgba(0,0,0,0.06);
+
+  /* --- TEXT COLORS --- */
+  --text: #2d2424;
+  --muted: #8c8282;
+
+  /* --- ACCENTS (Peach/Orange) --- */
+  --primary: #ff9f76;
+  --primary-hover: #ff8b5a;
+  
+  /* --- UTILITY --- */
+  --success: #51cf66;
+  --warning: #ffd43b;
+  --danger: #ff6b6b;
+  --radius: 18px;
+  --shadow-soft: 0 10px 40px rgba(31, 38, 135, 0.08);
+  --ease: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* ===============================
+   2. DARK THEME VARIABLES
+   (Applied to Dashboard automatically via JS toggle)
+================================ */
+html.dark, [data-theme="dark"] {
+  --bg: #121216;
+  --panel: rgba(30, 30, 35, 0.75);
+  --card: rgba(30, 30, 35, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --border: rgba(255,255,255,0.05);
+  --text: #ebebeb;
+  --muted: #a1a1aa;
+  --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* ===============================
+   3. GLOBAL RESET & BODY
+================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--font-main);
+  outline: none;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--bg);
+  background-image: 
+    radial-gradient(at 10% 10%, hsla(253,16%,7%,0.05) 0, transparent 50%), 
+    radial-gradient(at 90% 0%, hsla(22,90%,70%,0.15) 0, transparent 50%);
+  color: var(--text);
+  transition: background 0.3s;
+}
+
+/* Dark Body Background Override */
+html.dark body, [data-theme="dark"] body {
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(253,16%,15%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(339,49%,20%,1) 0, transparent 50%);
+}
+
+/* ===============================
+   4. NAVIGATION
+================================ */
+.dashboard-nav {
+  height: 80px;
+  padding: 0 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--panel);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+}
+
+/* Dark Nav Override */
+html.dark .dashboard-nav, [data-theme="dark"] .dashboard-nav {
+  background: rgba(18, 18, 22, 0.8);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ===============================
+   5. BUTTONS
+================================ */
+.primary-btn {
+  background: var(--primary);
+  border: none;
+  color: white;
+  padding: 10px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+  font-family: var(--font-main);
+  box-shadow: 0 4px 14px rgba(255, 159, 118, 0.4);
+}
+
+.primary-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.secondary-btn {
+  background: rgba(255,255,255,0.5);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.secondary-btn:hover {
+  background: white;
+  border-color: var(--primary);
+}
+
+/* Dark Secondary Button Override */
+html.dark .secondary-btn, [data-theme="dark"] .secondary-btn {
+  background: rgba(255,255,255,0.05);
+  border-color: var(--glass-border);
+}
+
+html.dark .secondary-btn:hover, [data-theme="dark"] .secondary-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: var(--text);
+}
+
+.logout-btn {
+  border: 1px solid var(--glass-border);
+  color: var(--danger);
+  background: rgba(255, 107, 107, 0.1);
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.logout-btn:hover {
+  background: var(--danger);
+  color: white;
+}
+
+.icon-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--muted);
+  padding: 8px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.icon-btn:hover {
+  background: rgba(0,0,0,0.05);
+  color: var(--text);
+  transform: scale(1.05);
+}
+
+/* ===============================
+   6. DASHBOARD LAYOUT & STATS
+================================ */
+.dashboard-content {
+  max-width: 1000px;
+  margin: auto;
+  padding: 3rem 2rem;
+}
+
+.dashboard-hero { margin-bottom: 3rem; }
+.dashboard-hero h1 { font-size: 2.6rem; font-weight: 700; letter-spacing: -1px; color: var(--text); }
+.dashboard-hero p { color: var(--muted); font-size: 1.1rem; margin-top: 5px; }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.stat-card {
+  background: var(--card);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.2s;
+}
+
+.stat-card:hover { transform: translateY(-5px); }
+.stat-card h3 { font-size: 2.4rem; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+.stat-card span { color: var(--muted); font-size: 0.95rem; font-family: var(--font-code); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Dark Stat Card Override */
+html.dark .stat-card, [data-theme="dark"] .stat-card {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* ===============================
+   7. TASK LIST
+================================ */
+.task-card {
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  border: 1px solid var(--glass-border);
+  margin-bottom: 1rem;
+  transition: all 0.2s var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+  border-color: white;
+}
+
+/* Dark Task Card Override */
+html.dark .task-card, [data-theme="dark"] .task-card {
+  background: rgba(255, 255, 255, 0.03);
+}
+html.dark .task-card:hover, [data-theme="dark"] .task-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.task-header { display: flex; justify-content: space-between; align-items: center; }
+.task-left { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.task-left h4 { font-size: 1.1rem; font-weight: 600; color: var(--text); }
+.task-left p { font-size: 0.9rem; color: var(--muted); line-height: 1.4; }
+.task-actions { display: flex; gap: 10px; }
+
+/* ===============================
+   8. CHIPS
+================================ */
+.status-chip, .priority-chip {
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-family: var(--font-code);
+}
+
+.status-chip.todo { background: rgba(140, 130, 130, 0.1); color: var(--text); }
+.status-chip.in_progress { background: rgba(255, 159, 118, 0.15); color: #d97706; }
+.status-chip.done { background: rgba(81, 207, 102, 0.15); color: #2b8a3e; }
+.priority-chip.low { background: rgba(116, 192, 252, 0.15); color: #1c7ed6; }
+.priority-chip.medium { background: rgba(255, 212, 59, 0.2); color: #f08c00; }
+.priority-chip.high { background: rgba(255, 107, 107, 0.15); color: #e03131; }
+
+.empty-task-card {
+  margin-top: 3rem;
+  padding: 4rem;
+  border-radius: 24px;
+  background: rgba(255,255,255,0.3);
+  border: 2px dashed rgba(140, 130, 130, 0.2);
+  text-align: center;
+}
+.empty-task-card span { color: var(--muted); font-weight: 500; }
+
+/* ===============================
+   9. MODALS
+================================ */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(253, 246, 240, 0.85);
+  display: flex; justify-content: center; align-items: center;
+  backdrop-filter: blur(8px); z-index: 1000;
+}
+
+.modal {
+  width: 500px;
+  background: #ffffff;
+  padding: 2.5rem;
+  border-radius: 24px;
+  border: 1px solid white;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Modal Override */
+html.dark .modal, [data-theme="dark"] .modal {
+  background: #18181b;
+  border: 1px solid var(--glass-border);
+}
+
+.modal h2 { color: var(--text); margin-bottom: 1.5rem; font-weight: 700; }
+
+.modal input, .modal textarea {
+  width: 100%;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  padding: 14px;
+  border-radius: 12px;
+  color: var(--text);
+  margin-bottom: 1.2rem;
+  font-family: var(--font-main);
+  transition: 0.2s;
+}
+
+/* Dark Input Override */
+html.dark input, html.dark textarea, [data-theme="dark"] input, [data-theme="dark"] textarea {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: var(--glass-border);
+  color: white;
+}
+
+.modal input:focus, .modal textarea:focus {
+  background: white;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(255, 159, 118, 0.2);
+}
+
+html.dark input:focus, [data-theme="dark"] input:focus {
+  background: rgba(0,0,0,0.5);
+}
+
+.chip-group { display: flex; gap: 10px; margin-bottom: 1.4rem; }
+
+.chip {
+  padding: 8px 16px; border-radius: 12px;
+  border: 1px solid var(--border); background: white;
+  cursor: pointer; font-size: 0.9rem; color: var(--muted); transition: 0.2s;
+}
+
+html.dark .chip, [data-theme="dark"] .chip {
+  background: rgba(255,255,255,0.05);
+  border-color: var(--glass-border);
+}
+
+.chip:hover { background: #f8f9fa; }
+.chip.active {
+  background: var(--primary); border-color: var(--primary);
+  color: white; box-shadow: 0 4px 10px rgba(255, 159, 118, 0.3);
+}
+
+.modal-actions { display: flex; justify-content: flex-end; gap: 12px; }
+
+/* ===============================
+   10. AUTH PAGES (STRICT DARK MODE)
+   These styles are hardcoded to be dark regardless of theme variables.
+================================ */
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  /* Hardcoded Dark Background */
+  background-color: #020617;
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(253,16%,15%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(339,49%,20%,1) 0, transparent 50%);
+}
+
+.auth-card {
+  width: 420px;
+  /* Hardcoded Dark Glass */
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(24px);
+  border-radius: 24px;
+  padding: 3rem 2.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.auth-card h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #ffffff; /* Forced White */
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 16px;
+  margin-bottom: 1.2rem;
+  border-radius: 12px;
+  /* Forced Dark Input */
+  background: rgba(2, 6, 23, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #f8fafc;
+  font-size: 1rem;
+  transition: 0.2s;
+}
+
+.auth-card input::placeholder {
+  color: rgba(148, 163, 184, 0.5);
+}
+
+.auth-card input:focus {
+  outline: none;
+  background: rgba(2, 6, 23, 0.8);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(255, 159, 118, 0.2);
+}
+
+.auth-card button {
+  width: 100%;
+  padding: 16px;
+  margin-top: 1rem;
+  border-radius: 12px;
+  border: none;
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 159, 118, 0.4);
+  transition: 0.2s;
+}
+
+.auth-card button:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.auth-card p {
+  margin-top: 1.8rem;
+  font-size: 14px;
+  text-align: center;
+  color: #94a3b8; /* Slate-400 */
+}
+
+.auth-card a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-card a:hover {
+  text-decoration: underline;
+  color: #ffffff;
+}
+
+/* ===============================
+   11. TOAST NOTIFICATIONS
+================================ */
+.toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  min-width: 280px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: white;
+  border: 1px solid #f1f3f5;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+  z-index: 99999;
+  color: #2d2424; /* Hardcoded to ensure visibility */
+  font-weight: 500;
+}

@@ -5,13 +5,15 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-// REGISTER
+/* =========================
+   REGISTER
+========================= */
 router.post("/register", async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { user_name, email, password } = req.body;
 
     const user = await pool.query(
-      "SELECT * FROM users WHERE email=$1",
+      "SELECT * FROM users WHERE email = $1",
       [email]
     );
 
@@ -22,24 +24,31 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await pool.query(
-      "INSERT INTO users (name,email,password) VALUES ($1,$2,$3) RETURNING *",
-      [name, email, hashedPassword]
+      `
+      INSERT INTO users (username, email, password)
+      VALUES ($1, $2, $3)
+      RETURNING id, username, email
+      `,
+      [user_name, email, hashedPassword]
     );
 
     res.json(newUser.rows[0]);
+
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
   }
 });
 
-// LOGIN
+/* =========================
+   LOGIN
+========================= */
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
     const user = await pool.query(
-      "SELECT * FROM users WHERE email=$1",
+      "SELECT * FROM users WHERE email = $1",
       [email]
     );
 
@@ -58,10 +67,19 @@ router.post("/login", async (req, res) => {
 
     const token = jwt.sign(
       { userId: user.rows[0].id },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
     );
 
-    res.json({ token });
+    res.json({
+      token,
+      user: {
+        id: user.rows[0].id,
+        username: user.rows[0].username,
+        email: user.rows[0].email,
+      },
+    });
+
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
